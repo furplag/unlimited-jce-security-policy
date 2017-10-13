@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 
 import jp.furplag.util.reflect.SavageReflection;
 
@@ -40,7 +41,7 @@ public final class Unlimitator {
   public Unlimitator() {
     Logger logger = Logger.getGlobal();
     logger.setUseParentHandlers(false);
-    logger.addHandler(new StreamHandler(System.out));
+    logger.addHandler(new InstantiveStreamHandler(System.out));
     try {
       unchainRestriction();
     } catch (Exception e) {
@@ -48,8 +49,8 @@ public final class Unlimitator {
     }
   }
 
-  private static final class StreamHandler extends java.util.logging.StreamHandler {
-    private StreamHandler(OutputStream out) {
+  private static final class InstantiveStreamHandler extends StreamHandler {
+    private InstantiveStreamHandler(OutputStream out) {
       setOutputStream(out);
     }
   }
