@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package jp.furplag.util.crypto;
 
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.security.Permission;
 import java.security.PermissionCollection;
@@ -22,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
 
 import jp.furplag.util.reflect.SavageReflection;
 
@@ -39,15 +40,17 @@ public final class Unlimitator {
   public Unlimitator() {
     Logger logger = Logger.getGlobal();
     logger.setUseParentHandlers(false);
-    logger.addHandler(new StreamHandler() {
-      {
-        setOutputStream(System.out);
-      }
-    });
+    logger.addHandler(new StreamHandler(System.out));
     try {
       unchainRestriction();
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to remove cryptography restrictions .", e);
+    }
+  }
+
+  private static final class StreamHandler extends java.util.logging.StreamHandler {
+    private StreamHandler(OutputStream out) {
+      setOutputStream(out);
     }
   }
 
@@ -61,14 +64,6 @@ public final class Unlimitator {
    * @throws IllegalAccessException
    */
   private static void unchainRestriction() throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    Logger logger = Logger.getGlobal();
-    logger.setUseParentHandlers(false);
-    logger.addHandler(new StreamHandler() {
-      {
-        setOutputStream(System.out);
-      }
-    });
-
     final Class<?> jceSecurity = Class.forName("javax.crypto.JceSecurity");
     final Field isRestricted = jceSecurity.getDeclaredField("isRestricted");
     if (!isUnderLimitation() || !Boolean.valueOf(Objects.toString(SavageReflection.get(null, isRestricted), "false"))) {
