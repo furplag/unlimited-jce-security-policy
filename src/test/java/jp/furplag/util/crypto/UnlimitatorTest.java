@@ -31,6 +31,25 @@ public class UnlimitatorTest {
     if (Boolean.valueOf(Objects.toString(SavageReflection.get(null, Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted"))))) {
       new Unlimitator();
       assertFalse(Boolean.valueOf(Objects.toString(SavageReflection.get(null, Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted")))));
+      new Unlimitator();
+      assertFalse(Boolean.valueOf(Objects.toString(SavageReflection.get(null, Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted")))));
+
+      SavageReflection.set(Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted"), true);
+      final String javaRuntimeName = System.getProperty("java.runtime.name");
+      System.setProperty("java.runtime.name", "Not a " + javaRuntimeName);
+      new Unlimitator();
+      System.setProperty("java.runtime.name", javaRuntimeName);
+      assertTrue(Boolean.valueOf(Objects.toString(SavageReflection.get(null, Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted")))));
+
+      SavageReflection.set(Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted"), true);
+      final String javaVersion = System.getProperty("java.version");
+      System.setProperty("java.version", "10" + javaVersion);
+      new Unlimitator();
+      System.setProperty("java.version", javaVersion);
+      assertTrue(Boolean.valueOf(Objects.toString(SavageReflection.get(null, Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted")))));
+
+      new Unlimitator();
+      assertFalse(Boolean.valueOf(Objects.toString(SavageReflection.get(null, Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted")))));
     }
   }
 }
