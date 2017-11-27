@@ -17,16 +17,16 @@
 package jp.furplag.util.crypto;
 
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.security.Permission;
 import java.security.PermissionCollection;
+import java.security.Security;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
-import jp.furplag.util.reflect.SavageReflection;
+import jp.furplag.reflect.SavageReflection;
 
 /**
  * turn "isRestricted" off JCE security policy .
@@ -38,57 +38,59 @@ import jp.furplag.util.reflect.SavageReflection;
  */
 public final class Unlimitator {
 
-  public Unlimitator() {
-    Logger logger = Logger.getGlobal();
-    logger.setUseParentHandlers(false);
-    logger.addHandler(new InstantiveStreamHandler(System.out));
-    try {
-      unchainRestriction();
-    } catch (Exception e) {
-      logger.log(Level.SEVERE, "Failed to remove cryptography restrictions .", e);
-    }
-  }
-
+  /** logging */
   private static final class InstantiveStreamHandler extends StreamHandler {
     private InstantiveStreamHandler(OutputStream out) {
       setOutputStream(out);
     }
   }
 
-  /**
-   * remove restriction from Java Crypto Extension to using AES more strong key length .
-   *
-   * @throws ClassNotFoundException
-   * @throws NoSuchFieldException
-   * @throws SecurityException
-   * @throws IllegalArgumentException
-   * @throws IllegalAccessException
-   */
-  private static void unchainRestriction() throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-    final Class<?> jceSecurity = Class.forName("javax.crypto.JceSecurity");
-    final Field isRestricted = jceSecurity.getDeclaredField("isRestricted");
-    if (!isUnderLimitation() || !Boolean.valueOf(Objects.toString(SavageReflection.get(null, isRestricted), "false"))) {
-      return;
+  public Unlimitator() {
+    try {
+      unchainRestriction();
+    } catch (Exception e) {
+      Logger logger = Logger.getGlobal();
+      logger.setUseParentHandlers(false);
+      logger.addHandler(new InstantiveStreamHandler(System.out));
+      logger.log(Level.WARNING, "Failed to remove cryptography restrictions .", e);
     }
-    final Field defaultPolicyField = jceSecurity.getDeclaredField("defaultPolicy");
-
-    final Class<?> cryptoPermissions = Class.forName("javax.crypto.CryptoPermissions");
-    final Field perms = cryptoPermissions.getDeclaredField("perms");
-
-    final Class<?> cryptoAllPermission = Class.forName("javax.crypto.CryptoAllPermission");
-    final Field instance = cryptoAllPermission.getDeclaredField("INSTANCE");
-
-    final PermissionCollection defaultPolicy = ((PermissionCollection) SavageReflection.get(null, defaultPolicyField));
-
-    SavageReflection.set(isRestricted, false);
-    ((Map<?, ?>) SavageReflection.get(defaultPolicy, perms)).clear();
-    defaultPolicy.add(((Permission) SavageReflection.get(null, instance)));
   }
 
-  private static boolean isUnderLimitation() {
-    final String javaRuntimeName = System.getProperty("java.runtime.name");
-    final String javaVersion = System.getProperty("java.version");
+  private static void unchainRestriction() throws ReflectiveOperationException, SecurityException {
+    if (isUnderLimitation(Boolean.valueOf(Objects.toString(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), "false")))) {
+      removeRestriction();
+    }
+    unlimitation();
+  }
 
-    return "Java(TM) SE Runtime Environment".equals(javaRuntimeName) && (Objects.toString(javaVersion).startsWith("1.7") || Objects.toString(javaVersion).startsWith("1.8"));
+  /**
+   * remove restriction from Java Crypto Extension .
+   *
+   * @throws ReflectiveOperationException
+   * @throws SecurityException
+   */
+  private static void removeRestriction() throws ReflectiveOperationException, SecurityException {
+    Class<?> jceSecurity = Class.forName("javax.crypto.JceSecurity");
+    SavageReflection.set(jceSecurity, "isRestricted", false);
+    ((Map<?, ?>) SavageReflection.get(SavageReflection.get(jceSecurity, "defaultPolicy"), "perms")).clear();
+    ((PermissionCollection) SavageReflection.get(jceSecurity, "defaultPolicy")).add(((Permission) SavageReflection.get(Class.forName("javax.crypto.CryptoAllPermission"), "INSTANCE")));
+  }
+
+  private static void unlimitation() {
+    if (!"unlimited".equals(Security.getProperty("crypto.policy"))) Security.setProperty("crypto.policy", "unlimited");
+  }
+
+  private static boolean isUnderLimitation(final boolean isRestricted) {
+    return isRestricted && isLimitedableRuntime() && isLimitedableVersion();
+  }
+
+  private static boolean isLimitedableRuntime() {
+    return "Java(TM) SE Runtime Environment".equals(System.getProperty("java.runtime.name"));
+  }
+
+  private static boolean isLimitedableVersion() {
+    return
+      Objects.toString(System.getProperty("java.vm.specification.version")).startsWith("1") &&
+      "1.8.0_151".compareTo(Objects.toString(System.getProperty("java.version"))) > 0;
   }
 }

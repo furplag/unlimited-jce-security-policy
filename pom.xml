@@ -18,9 +18,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>jp.furplag.sandbox.java.util</groupId>
+  <groupId>jp.furplag.sandbox</groupId>
   <artifactId>unlimited-jce-security-policy</artifactId>
-  <version>1.0.0</version>
   <inceptionYear>2017</inceptionYear>
   <name>${project.artifactId}</name>
   <description>turn "isRestricted" off JCE security policy ( the reason because I want to use AES_256 ) .</description>
@@ -61,7 +60,7 @@
   <repositories>
 
     <repository>
-      <id>jp.furplag.sandbox.java.util.savage-reflections</id>
+      <id>jp.furplag.sandbox.savage-reflections</id>
       <url>https://raw.github.com/furplag/savage-reflections/mvn-repo/</url>
       <snapshots>
         <enabled>true</enabled>
@@ -80,9 +79,9 @@
     </dependency>
 
     <dependency>
-      <groupId>jp.furplag.sandbox.java.util</groupId>
+      <groupId>jp.furplag.sandbox</groupId>
       <artifactId>savage-reflections</artifactId>
-      <version>1.0.0</version>
+      <version>2.0.0</version>
     </dependency>
   </dependencies>
 
@@ -257,4 +256,5 @@
     </plugins>
   </reporting>
 
+  <version>2.0.0</version>
 </project>
