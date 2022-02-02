@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
-import jp.furplag.reflect.SavageReflection;
+import jp.furplag.sandbox.reflect.SavageReflection;
 
 /**
  * turn "isRestricted" off JCE security policy .
