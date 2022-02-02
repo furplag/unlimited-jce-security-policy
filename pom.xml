@@ -20,6 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>jp.furplag.sandbox</groupId>
   <artifactId>unlimited-jce-security-policy</artifactId>
+  <version>2.1.0-final</version>
   <inceptionYear>2017</inceptionYear>
   <name>${project.artifactId}</name>
   <description>turn "isRestricted" off JCE security policy ( the reason because I want to use AES_256 ) .</description>
@@ -277,5 +278,4 @@
     </plugins>
   </reporting>
 
-  <version>2.0.0</version>
 </project>
