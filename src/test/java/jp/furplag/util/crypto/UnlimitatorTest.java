@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package jp.furplag.util.crypto;
 
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-
 import java.security.Permission;
 import java.security.Security;
 import java.util.Objects;
-
 import org.junit.Test;
-
-import jp.furplag.reflect.Reflections;
-import jp.furplag.reflect.SavageReflection;
+import jp.furplag.sandbox.reflect.SavageReflection;
+import jp.furplag.util.RefrectionUtils;
 
 public class UnlimitatorTest {
 
@@ -64,7 +59,7 @@ public class UnlimitatorTest {
     } finally {
       insecure();
     }
-    assertThat(new Unlimitator() instanceof Unlimitator, is(true));
+    assertTrue(new Unlimitator() instanceof Unlimitator);
   }
 
   @Test
@@ -73,11 +68,11 @@ public class UnlimitatorTest {
     String javaRuntimeNameDefault = Objects.toString(System.getProperty("java.runtime.name"));
 
     System.setProperty("java.runtime.name", "Anonymously Java");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableRuntime").invoke(null), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableRuntime").invoke(null));
     System.setProperty("java.runtime.name", "java(tm) se runtime environment");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableRuntime").invoke(null), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableRuntime").invoke(null));
     System.setProperty("java.runtime.name", "Java(TM) SE Runtime Environment");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableRuntime").invoke(null), is(true));
+    assertTrue((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableRuntime").invoke(null));
     System.setProperty("java.runtime.name", javaRuntimeNameDefault);
   }
 
@@ -89,22 +84,22 @@ public class UnlimitatorTest {
 
     System.setProperty("java.vm.specification.version", "undefined");
     System.setProperty("java.version", "undefined");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableVersion").invoke(null), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableVersion").invoke(null));
     System.setProperty("java.vm.specification.version", "1.7");
     System.setProperty("java.version", "1.7.0_80");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableVersion").invoke(null), is(true));
+    assertTrue((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableVersion").invoke(null));
     System.setProperty("java.vm.specification.version", "1.8");
     System.setProperty("java.version", "1.8.0_150");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableVersion").invoke(null), is(true));
+    assertTrue((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableVersion").invoke(null));
     System.setProperty("java.vm.specification.version", "1.8");
     System.setProperty("java.version", "1.8.0_151");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableVersion").invoke(null), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableVersion").invoke(null));
     System.setProperty("java.vm.specification.version", "1.8");
     System.setProperty("java.version", "1.8.0_152");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableVersion").invoke(null), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableVersion").invoke(null));
     System.setProperty("java.vm.specification.version", "9");
     System.setProperty("java.version", "9.0.1");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isLimitedableVersion").invoke(null), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isLimitedableVersion").invoke(null));
     System.setProperty("java.vm.specification.version", javaVmSpecificationVersionDefault);
     System.setProperty("java.version", javaVersionDefault);
   }
@@ -115,32 +110,32 @@ public class UnlimitatorTest {
     String javaVmSpecificationVersionDefault = Objects.toString(System.getProperty("java.vm.specification.version"));
     String javaVersionDefault = Objects.toString(System.getProperty("java.version"));
 
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false));
 
     System.setProperty("java.runtime.name", "Anonymously Java");
     System.setProperty("java.vm.specification.version", "undefined");
     System.setProperty("java.version", "undefined");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false), is(false));
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true));
     System.setProperty("java.runtime.name", "Java(TM) SE Runtime Environment");
     System.setProperty("java.vm.specification.version", "1.7");
     System.setProperty("java.version", "1.7.0_80");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false), is(false));
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true), is(true));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false));
+    assertTrue((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true));
     System.setProperty("java.vm.specification.version", "1.8");
     System.setProperty("java.version", "1.8.0_150");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false), is(false));
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true), is(true));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false));
+    assertTrue((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true));
     System.setProperty("java.version", "1.8.0_151");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false), is(false));
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true));
     System.setProperty("java.version", "1.8.0_152");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false), is(false));
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true));
     System.setProperty("java.vm.specification.version", "9");
     System.setProperty("java.version", "9.0.1");
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false), is(false));
-    assertThat(Reflections.findMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true), is(false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, false));
+    assertFalse((boolean) RefrectionUtils.getMethod(Unlimitator.class, "isUnderLimitation", boolean.class).invoke(null, true));
 
     System.setProperty("java.runtime.name", javaRuntimeNameDefault);
     System.setProperty("java.vm.specification.version", javaVmSpecificationVersionDefault);
@@ -152,16 +147,16 @@ public class UnlimitatorTest {
     String cryptPolicyDefault = Objects.toString(Security.getProperty("crypto.policy"));
 
     Security.setProperty("crypto.policy", "undefined");
-    Reflections.findMethod(Unlimitator.class, "unlimitation").invoke(null);
-    assertThat(Security.getProperty("crypto.policy"), is("unlimited"));
+    RefrectionUtils.getMethod(Unlimitator.class, "unlimitation").invoke(null);
+    assertEquals("unlimited", Security.getProperty("crypto.policy"));
 
     Security.setProperty("crypto.policy", "limited");
-    Reflections.findMethod(Unlimitator.class, "unlimitation").invoke(null);
-    assertThat(Security.getProperty("crypto.policy"), is("unlimited"));
+    RefrectionUtils.getMethod(Unlimitator.class, "unlimitation").invoke(null);
+    assertEquals("unlimited", Security.getProperty("crypto.policy"));
 
     Security.setProperty("crypto.policy", "unlimited");
-    Reflections.findMethod(Unlimitator.class, "unlimitation").invoke(null);
-    assertThat(Security.getProperty("crypto.policy"), is("unlimited"));
+    RefrectionUtils.getMethod(Unlimitator.class, "unlimitation").invoke(null);
+    assertEquals("unlimited", Security.getProperty("crypto.policy"));
 
     Security.setProperty("crypto.policy", cryptPolicyDefault);
   }
@@ -177,41 +172,41 @@ public class UnlimitatorTest {
     System.setProperty("java.vm.specification.version", "1.7");
     System.setProperty("java.version", "1.7.0_80");
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", false);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(false));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertFalse((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", true);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(false));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertFalse((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     System.setProperty("java.vm.specification.version", "1.8");
     System.setProperty("java.version", "1.8.0_150");
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", false);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(false));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertFalse((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", true);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(false));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertFalse((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     System.setProperty("java.version", "1.8.0_151");
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", false);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(false));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertFalse((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", true);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(true));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertTrue((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     System.setProperty("java.version", "1.8.0_152");
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", false);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(false));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertFalse((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", true);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(true));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertTrue((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     System.setProperty("java.vm.specification.version", "9");
     System.setProperty("java.version", "9.0.1");
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", false);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(false));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertFalse((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
     SavageReflection.set(Class.forName("javax.crypto.JceSecurity"), "isRestricted", true);
-    Reflections.findMethod(Unlimitator.class, "unchainRestriction").invoke(null);
-    assertThat(SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"), is(true));
+    RefrectionUtils.getMethod(Unlimitator.class, "unchainRestriction").invoke(null);
+    assertTrue((boolean) SavageReflection.get(Class.forName("javax.crypto.JceSecurity"), "isRestricted"));
 
     System.setProperty("java.runtime.name", javaRuntimeNameDefault);
     System.setProperty("java.vm.specification.version", javaVmSpecificationVersionDefault);

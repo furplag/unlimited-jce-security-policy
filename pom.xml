@@ -60,8 +60,17 @@
   <repositories>
 
     <repository>
-      <id>jp.furplag.sandbox.savage-reflections</id>
-      <url>https://raw.github.com/furplag/savage-reflections/mvn-repo/</url>
+      <id>jp.furplag.sandbox.commons-wrap</id>
+      <url>https://raw.github.com/furplag/commons-wrap/mvn-repo/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>jp.furplag.sandbox.relic</id>
+      <url>https://raw.github.com/furplag/relic/mvn-repo/</url>
       <snapshots>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
@@ -74,14 +83,26 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jp.furplag.sandbox.java.util</groupId>
+      <artifactId>commons-wrap</artifactId>
+      <version>2.0.1-final</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>jp.furplag.sandbox</groupId>
-      <artifactId>savage-reflections</artifactId>
-      <version>2.0.0</version>
+      <artifactId>relic</artifactId>
+      <version>0.9.1-Java8</version>
     </dependency>
   </dependencies>
 
